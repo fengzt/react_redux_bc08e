@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { CAP_NHAT_SINH_VIEN, THAY_DOI_INPUT, THEM_SINH_VIEN } from "../../redux/Type/BaiTapQuanLySinhVienType";
+import {
+  capNhatSinhVienAciton,
+  thayDoiInputAction,
+  themSinhVienAction,
+} from "../../redux/Action/BaiTapQuanLySinhVienAction";
 
 class FormDangKySinhVien extends Component {
   handleChange = (event) => {
@@ -51,7 +55,6 @@ class FormDangKySinhVien extends Component {
       errors: newErrors,
     };
     this.props.thayDoiInput(sinhVien);
-    
   };
 
   // Kiểm tra hợp lệ
@@ -189,25 +192,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   thayDoiInput: (sinhVien) => {
-    const action = {
-      type: THAY_DOI_INPUT,
-      sinhVien,
-    };
-    dispatch(action);
+    dispatch(thayDoiInputAction(sinhVien));
   },
   themSinhVien: (sinhVien) => {
-    const action = {
-      type: THEM_SINH_VIEN,
-      sinhVien,
-    };
-    dispatch(action);
+    dispatch(themSinhVienAction(sinhVien));
   },
   capNhatSinhVien: (sinhVien) => {
-    const action = {
-      type: CAP_NHAT_SINH_VIEN,
-      sinhVien,
-    };
-    dispatch(action);
+    dispatch(capNhatSinhVienAciton(sinhVien));
   },
 });
 

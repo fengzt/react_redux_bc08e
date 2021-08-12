@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  CHINH_SUA_SINH_VIEN,
-  XOA_SINH_VIEN,
-} from "../../redux/Type/BaiTapQuanLySinhVienType";
+import { chinhSuaSinhVienAction, thayDoiTimKiemAction, timKiemSinhVienAction, xoaSinhVienAction } from "../../redux/Action/BaiTapQuanLySinhVienAction";
+
 
 class TableQuanLySinhVien extends Component {
   handleChangeSearch = (event) => {
@@ -92,32 +90,16 @@ const mapStateToProps = (state) => ({
 
 const mapDitpatchToProps = (dispatch) => ({
   xoaSinhVien: (maSV) => {
-    const action = {
-      type: XOA_SINH_VIEN,
-      maSV,
-    };
-    dispatch(action);
+    dispatch(xoaSinhVienAction(maSV));
   },
   chinhSuaSinhVien: (sinhVien) => {
-    const action = {
-      type: CHINH_SUA_SINH_VIEN,
-      sinhVien,
-    };
-    dispatch(action);
+    dispatch(chinhSuaSinhVienAction(sinhVien));
   },
   thayDoiTimKiem: (timKiem) => {
-    const action = {
-      type: "THAY_DOI_TIM_KIEM",
-      timKiem,
-    };
-    dispatch(action);
+    dispatch(thayDoiTimKiemAction(timKiem));
   },
   timKiemSinhVien: (timKiem) => {
-    const action = {
-      type: "TIM_KIEM_SINH_VIEN",
-      timKiem,
-    };
-    dispatch(action);
+    dispatch(timKiemSinhVienAction(timKiem));
   },
 });
 
