@@ -29,11 +29,11 @@ class BaiTapBurger extends Component {
     return content;
 
     //-----------------------------------------------------------
-    // Cách 2: dùng Object.entries => turble: đối tượng được thể hiện dưới dạng mảng
+    // Cách 2: dùng Object.entries => tuple: đối tượng được thể hiện dưới dạng mảng
     // // console.log(Object.entries(burger));
-    // // 0: (2) ["salad", 1] -> turble 1
-    // // 1: (2) ["cheese", 1] -> turble 2
-    // // 2: (2) ["beef", 1] -> turble 3
+    // // 0: (2) ["salad", 1] -> tuple 1
+    // // 1: (2) ["cheese", 1] -> tuple 2
+    // // 2: (2) ["beef", 1] -> tuple 3
 
     // Kết hợp thêm hàm map để bóc tách phần tử, dùng destructer của es6
     // các item trong burger đang là mảng []

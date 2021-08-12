@@ -17,7 +17,7 @@ const burgerState = {
 // Lưu ý: redux chỉ render lại giao diện <=> redux nhận thấy sự thay đổi trong state
 
 const BaiTapBurgerReducer = (state = burgerState, action) => {
-  console.log(action);
+  // console.log(action);
   switch (action.type) {
     case "THAY_DOI_MON": {
       let { propsMenu, heSo } = action;

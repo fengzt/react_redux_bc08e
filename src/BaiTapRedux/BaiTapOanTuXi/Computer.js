@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 class Computer extends Component {
   render() {
+    // keyframe css
     let keyframe = `@keyframes randomItem${Date.now()} {
       0% {top: -50px;}
       25% {top: 100px;}
