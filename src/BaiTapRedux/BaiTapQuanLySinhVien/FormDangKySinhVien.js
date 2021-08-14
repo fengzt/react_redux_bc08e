@@ -7,10 +7,25 @@ import {
 } from "../../redux/Action/BaiTapQuanLySinhVienAction";
 
 class FormDangKySinhVien extends Component {
+  state = {
+    values: {
+      maSV: "",
+      hoTen: "",
+      soDienThoai: "",
+      email: "",
+    },
+    errors: {
+      maSV: "",
+      hoTen: "",
+      soDienThoai: "",
+      email: "",
+    },
+  };
+  
   handleChange = (event) => {
     let { name, value } = event.target;
-    let newValues = { ...this.props.sinhVien.values };
-    let newErrors = { ...this.props.sinhVien.errors };
+    let newValues = { ...this.state.values };
+    let newErrors = { ...this.state.errors };
     let messageError = "";
     let regex;
     let attriValue = "";
@@ -50,11 +65,10 @@ class FormDangKySinhVien extends Component {
 
     newErrors[name] = messageError;
 
-    const sinhVien = {
+    this.setState({
       values: newValues,
       errors: newErrors,
-    };
-    this.props.thayDoiInput(sinhVien);
+    });
   };
 
   // Kiểm tra hợp lệ
@@ -64,23 +78,41 @@ class FormDangKySinhVien extends Component {
       alert("Dữ liệu không hợp lệ");
       return;
     } else {
-      this.props.themSinhVien(this.props.sinhVien.values);
+      // Gói this.state.values lại thành biến riêng
+      // Khi hàm setState chạy:
+      // + gán giá trị mới vào property values
+      // + dispatch this.state.values lên redux
+      // => setState chạy xong thì this.state.values mới thay đổi giá trị và render lại
+      let { values } = this.state;
+      this.setState(
+        {
+          values: {
+            maSV: "",
+            hoTen: "",
+            soDienThoai: "",
+            email: "",
+          },
+        },
+        () => {
+          this.props.themSinhVien(values);
+        }
+      );
     }
   };
 
   checkValue = () => {
     let valid = true;
     // Kiểm tra values khác rỗng
-    for (let key in this.props.sinhVien.values) {
-      if (this.props.sinhVien.values[key] === "") {
+    for (let key in this.state.values) {
+      if (this.state.values[key] === "") {
         valid = false;
         break;
       }
     }
 
     // kiểm tra errors bằng rỗng
-    for (let key in this.props.sinhVien.errors) {
-      if (this.props.sinhVien.errors[key] !== "") {
+    for (let key in this.state.errors) {
+      if (this.state.errors[key] !== "") {
         valid = false;
         break;
       }
@@ -89,7 +121,7 @@ class FormDangKySinhVien extends Component {
   };
 
   render() {
-    let { maSV, hoTen, soDienThoai, email } = this.props.sinhVien.values;
+    let { maSV, hoTen, soDienThoai, email } = this.state.values;
     return (
       <form className="mt-4 container form-group" onSubmit={this.handleSubmit}>
         <div className="card">
@@ -102,14 +134,13 @@ class FormDangKySinhVien extends Component {
                 <div className="mb-3">
                   <p>Mã SV</p>
                   <input
+                    disabled={this.props.disabledMaSV}
                     value={maSV}
                     className="form-control"
                     name="maSV"
                     onChange={this.handleChange}
                   />
-                  <span style={{ color: "red" }}>
-                    {this.props.sinhVien.errors.maSV}
-                  </span>
+                  <span style={{ color: "red" }}>{this.state.errors.maSV}</span>
                 </div>
                 <div className="mb-3">
                   <p>Số điện thoại</p>
@@ -121,7 +152,7 @@ class FormDangKySinhVien extends Component {
                     typephone="phone"
                   />
                   <span style={{ color: "red" }}>
-                    {this.props.sinhVien.errors.soDienThoai}
+                    {this.state.errors.soDienThoai}
                   </span>
                 </div>
               </div>
@@ -135,7 +166,7 @@ class FormDangKySinhVien extends Component {
                     name="hoTen"
                   />
                   <span style={{ color: "red" }}>
-                    {this.props.sinhVien.errors.hoTen}
+                    {this.state.errors.hoTen}
                   </span>
                 </div>
                 <div className="mb-3">
@@ -148,7 +179,7 @@ class FormDangKySinhVien extends Component {
                     typeemail="email"
                   />
                   <span style={{ color: "red" }}>
-                    {this.props.sinhVien.errors.email}
+                    {this.state.errors.email}
                   </span>
                 </div>
               </div>
@@ -169,7 +200,20 @@ class FormDangKySinhVien extends Component {
                     alert("Dữ liệu không hợp lệ");
                     return;
                   } else {
-                    this.props.capNhatSinhVien(this.props.sinhVien.values);
+                    let { values } = this.state;
+                    this.setState(
+                      {
+                        values: {
+                          maSV: "",
+                          hoTen: "",
+                          soDienThoai: "",
+                          email: "",
+                        },
+                      },
+                      () => {
+                        this.props.capNhatSinhVien(values);
+                      }
+                    );
                   }
                 }}
                 className="btn btn-info mr-3 font-weight-bold"
@@ -182,12 +226,35 @@ class FormDangKySinhVien extends Component {
       </form>
     );
   }
+
+  // ------- Thống nhất this.state.values và this.props.sinhVienChinhSua---
+
+  // Đây là lifecycle TRẢ VỀ props cũ và state cũ trước khi render
+  // Hàm này chạy sau render()
+  // prevProps là Props từ redux truyền xuống ĐỂ render (giá trị TRƯỚC render)
+  // this.props không phải prevProps vì this.props nhận giá trị SAU render
+  // prevState chính là this.state TRƯỚC render
+  componentDidUpdate(prevProps, prevState) {
+    // Vòng lặp vô tận
+    // sau setState -> render chạy lại -> componentDidUpdate chạy lại -> tiếp tục setState
+    // => Phải dùng điều kiện ràng buộc khi nào mới setState ? => Khi maSV thay đổi
+
+    // Sẽ sót trường hợp nếu user chỉnh sửa 2 lần liên tiếp 1 maSV
+    // khi đó prevProps = this.props
+    // => Xử lý trên redux
+    if (prevProps.sinhVienChinhSua.maSV !== this.props.sinhVienChinhSua.maSV) {
+      return this.setState({
+        values: this.props.sinhVienChinhSua,
+      });
+    }
+  }
 }
 
 const mapStateToProps = (state) => ({
-  sinhVien: state.BaiTapQuanLySinhVienReducer.sinhVien,
+  sinhVienChinhSua: state.BaiTapQuanLySinhVienReducer.sinhVienChinhSua,
   disabledThem: state.BaiTapQuanLySinhVienReducer.disabledThem,
   disabledCapNhat: state.BaiTapQuanLySinhVienReducer.disabledCapNhat,
+  disabledMaSV: state.BaiTapQuanLySinhVienReducer.disabledMaSV,
 });
 
 const mapDispatchToProps = (dispatch) => ({

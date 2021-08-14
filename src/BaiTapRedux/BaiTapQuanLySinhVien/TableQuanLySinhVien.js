@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { chinhSuaSinhVienAction, thayDoiTimKiemAction, timKiemSinhVienAction, xoaSinhVienAction } from "../../redux/Action/BaiTapQuanLySinhVienAction";
 
-
 class TableQuanLySinhVien extends Component {
   handleChangeSearch = (event) => {
     let { value } = event.target;

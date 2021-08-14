@@ -2,7 +2,9 @@ import {
   CAP_NHAT_SINH_VIEN,
   CHINH_SUA_SINH_VIEN,
   THAY_DOI_INPUT,
+  THAY_DOI_TIM_KIEM,
   THEM_SINH_VIEN,
+  TIM_KIEM_SINH_VIEN,
   XOA_SINH_VIEN,
 } from "../Type/BaiTapQuanLySinhVienType";
 
@@ -22,23 +24,16 @@ const initialState = {
     },
   ],
   mangSinhVienKhongTim: [],
-  sinhVien: {
-    values: {
-      maSV: "",
-      hoTen: "",
-      soDienThoai: "",
-      email: "",
-    },
-    errors: {
-      maSV: "",
-      hoTen: "",
-      soDienThoai: "",
-      email: "",
-    },
+  sinhVienChinhSua: {
+    maSV: "",
+    hoTen: "",
+    soDienThoai: "",
+    email: "",
   },
   timKiem: "",
   disabledThem: false,
   disabledCapNhat: true,
+  disabledMaSV: false,
 };
 
 const BaiTapQuanLySinhVienReducer = (state = initialState, action) => {
@@ -51,7 +46,6 @@ const BaiTapQuanLySinhVienReducer = (state = initialState, action) => {
     }
 
     case THEM_SINH_VIEN: {
-      state.sinhVienCapNhat = action.sinhVien;
       let kiemTraSinhVien = state.mangSinhVien.find(
         (sinhVien) => sinhVien.maSV === action.sinhVien.maSV
       );
@@ -75,14 +69,16 @@ const BaiTapQuanLySinhVienReducer = (state = initialState, action) => {
     case CHINH_SUA_SINH_VIEN: {
       state.disabledThem = true;
       state.disabledCapNhat = false;
-      state.sinhVien.values = action.sinhVien;
-      state.sinhVien = { ...state.sinhVien };
+      state.disabledMaSV = true;
+      state.sinhVienChinhSua = action.sinhVien;
+      state.sinhVienChinhSua = { ...state.sinhVienChinhSua };
       return { ...state };
     }
 
     case CAP_NHAT_SINH_VIEN: {
       state.disabledCapNhat = true;
       state.disabledThem = false;
+      state.disabledMaSV = false;
 
       let mangSinhVienCapNhat = [...state.mangSinhVien];
       let index = mangSinhVienCapNhat.findIndex(
@@ -92,15 +88,21 @@ const BaiTapQuanLySinhVienReducer = (state = initialState, action) => {
         mangSinhVienCapNhat[index] = action.sinhVien;
       }
       state.mangSinhVien = mangSinhVienCapNhat;
+      state.sinhVienChinhSua = {
+        maSV: "",
+        hoTen: "",
+        soDienThoai: "",
+        email: "",
+      };
       return { ...state };
     }
 
-    case "THAY_DOI_TIM_KIEM": {
+    case THAY_DOI_TIM_KIEM: {
       state.timKiem = action.timKiem;
       return { ...state };
     }
 
-    case "TIM_KIEM_SINH_VIEN": {
+    case TIM_KIEM_SINH_VIEN: {
       let mangSinhVienCapNhat = [...state.mangSinhVien];
 
       if (action.timKiem !== "") {
